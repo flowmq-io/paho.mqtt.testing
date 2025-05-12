@@ -679,7 +679,7 @@ class Test(unittest.TestCase):
       self.waitfor(callback.subscribeds, 1, 3)
 
       bclient.subscribe([topics[0]], [MQTTV5.SubscribeOptions(2, noLocal=True)])
-      self.waitfor(callback.subscribeds, 1, 3)
+      self.waitfor(callback2.subscribeds, 1, 3)
 
       publish_properties = MQTTV5.Properties(MQTTV5.PacketTypes.PUBLISH)
       publish_properties.ResponseTopic = topics[0]

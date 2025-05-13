@@ -660,9 +660,9 @@ class Test(unittest.TestCase):
       aclient.disconnect()
 
       self.waitfor(callback2.messages, 1, 3)
-      self.assertEqual(len(callback2.messages), 1, callback2.messages)
+      self.assertEqual(len(callback2.messages), 2, callback2.messages)
       expected_subsids = set([2, 3])
-      received_subsids = set(callback2.messages[0][5].SubscriptionIdentifier)
+      received_subsids = set(callback2.messages[0][5].SubscriptionIdentifier + callback2.messages[1][5].SubscriptionIdentifier)
       self.assertEqual(received_subsids, expected_subsids, received_subsids)
       bclient.disconnect()
 

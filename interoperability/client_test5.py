@@ -997,6 +997,7 @@ class Test(unittest.TestCase):
 
     def test_flow_control2(self):
       testcallback = Callbacks()
+      testcallback.publish_errors = []
       # no callback means no background thread, to control receiving
       testclient = mqtt_client.Client("myclientid".encode("utf-8"))
 
@@ -1013,18 +1014,19 @@ class Test(unittest.TestCase):
 
       # send number of messages to exceed receive maximum
       qos = 2
-      pubs = 0
       for i in range(1, serverReceiveMaximum + 2):
         testclient.publish(topics[0], "message %d" % i, qos)
-        pubs += 1
 
-      # should get disconnected...
-      while testcallback.disconnects == []:
-        receiver.receive(testcallback)
-      self.waitfor(testcallback.disconnects, 1, 1)
-      self.assertEqual(len(testcallback.disconnects), 1, len(testcallback.disconnects))
-      self.assertEqual(testcallback.disconnects[0]["reasonCode"].value, 147,
-                       testcallback.disconnects[0]["reasonCode"].value)
+      # the number of PubRec = serverReceiveMaximum + 2
+      # the number of Pubcomp = serverReceiveMaximum + 1
+      for i in range(1, serverReceiveMaximum + 2 + serverReceiveMaximum + 1):
+        testclient.getReceiver().receive(testcallback)
+
+      self.assertEqual(len(testcallback.publish_errors), 1)
+      self.assertEqual(testcallback.publish_errors[0].getName(), "Quota exceeded")
+
+      testcallback.clear()
+      testclient.disconnect()
 
     def test_will_delay(self):
       """
@@ -1226,4 +1228,4 @@ if __name__ == "__main__":
   logging.info("hostname %s port %d", host, port)
   print("argv", sys.argv)
   for i in range(iterations):
-    unittest.main()
+    unittest.main(verbosity=2)

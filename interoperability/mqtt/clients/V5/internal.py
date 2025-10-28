@@ -80,9 +80,14 @@ class Receivers:
     elif packet.fh.PacketType == MQTTV5.PacketTypes.PUBREC:
       if packet.packetIdentifier in self.outMsgs.keys():
         #self.outMsgs[packet.packetIdentifier].pubrec_received = True
-        self.pubrel.packetIdentifier = packet.packetIdentifier
-        logger.debug("out: %s", str(self.pubrel))
-        self.socket.send(self.pubrel.pack())
+        if packet.reasonCode.getName() == "Success":
+          self.pubrel.packetIdentifier = packet.packetIdentifier
+          logger.debug("out: %s", str(self.pubrel))
+          self.socket.send(self.pubrel.pack())
+        else:
+          del self.outMsgs[packet.packetIdentifier]
+          if hasattr(callback, "publish_errors"):
+            callback.publish_errors.append(packet.reasonCode)
       else:
         raise Exception("PUBREC received for unknown msg id "+ \
                     str(packet.packetIdentifier))

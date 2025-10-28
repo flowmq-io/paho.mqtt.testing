@@ -36,6 +36,7 @@ class Callbacks(mqtt.clients.V5.Callback):
     self.subscribeds = []
     self.unsubscribeds = []
     self.disconnects = []
+    self.publish_errors = []
     self.broker = broker
 
   def __str__(self):

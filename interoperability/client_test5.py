@@ -1240,4 +1240,4 @@ if __name__ == "__main__":
   logging.info("hostname %s port %d", host, port)
   print("argv", sys.argv)
   for i in range(iterations):
-    unittest.main(verbosity=2)
+    unittest.main(verbosity=0)

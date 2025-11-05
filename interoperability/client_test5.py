@@ -169,7 +169,7 @@ class Test(unittest.TestCase):
 
       self.assertEqual(len(callback.messages), 3)
 
-      ## FIXME: flowmq does not support UserProperty now
+      ## FIXME: flowmq does not support UserProperty in Retain now
       '''
       userprops = callback.messages[0][5].UserProperty
       self.assertTrue(userprops in [[("a", "2"), ("c", "3")],[("c", "3"), ("a", "2")]], userprops)
@@ -204,10 +204,10 @@ class Test(unittest.TestCase):
       self.waitfor(callback2.messages, 1, 10)
       bclient.disconnect()
       self.assertEqual(len(callback2.messages), 1, callback2.messages)  # should have the will message
-      ''' FIXME: currently, the flowmq does not support UserProperty
+
       props = callback2.messages[0][5]
       self.assertEqual(props.UserProperty, [("a", "2"), ("c", "3")])
-      '''
+
 
     # 0 length clientid
     def test_zero_length_clientid(self):
@@ -463,7 +463,6 @@ class Test(unittest.TestCase):
       self.assertEqual(connack.sessionPresent, False)
       aclient.disconnect()
 
-    ''' FIXME: currently, the flowmq does not supports UserProperties
     def test_user_properties(self):
       callback.clear()
       aclient.connect(host=host, port=port, cleanstart=True)
@@ -486,7 +485,6 @@ class Test(unittest.TestCase):
       self.assertTrue(userprops in [[("a", "2"), ("c", "3")],[("c", "3"), ("a", "2")]], userprops)
       qoss = [callback.messages[i][2] for i in range(3)]
       self.assertTrue(1 in qoss and 2 in qoss and 0 in qoss, qoss)
-     '''
 
     def test_payload_format(self):
       callback.clear()

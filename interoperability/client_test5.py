@@ -217,10 +217,10 @@ class Test(unittest.TestCase):
         client0 = mqtt_client.Client("")
         fails = False
         try:
-          client0.connect(host=host, port=port, cleanstart=False) # should not be rejected
+          client0.connect(host=host, port=port, cleanstart=False) # should be rejected
         except:
           fails = True
-        assert fails == False
+        assert fails == True
         client0.disconnect()
         fails = False
         try:
